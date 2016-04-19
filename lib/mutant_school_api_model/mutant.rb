@@ -3,6 +3,8 @@ module MutantSchoolAPIModel
     # Get all the mutants from the backend
     # mutant = Mutant.all
     def self.all
+      response = HTTP.get("https://mutant-school.herokuapp.com/api/v1/mutants")
+      JSON.parse(response.to_s)
     end
 
     # Get a single mutant from the backend
