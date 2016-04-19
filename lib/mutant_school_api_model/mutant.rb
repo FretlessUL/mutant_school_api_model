@@ -52,11 +52,7 @@ module MutantSchoolAPIModel
 
     def initialize(attr = {})
       # Set instance variables from the items in the hash
-      attr.each do |name, value|
-        if self.class.attribute_names.include? name.to_sym
-          instance_variable_set("@#{name}", value)
-        end
-      end
+      update_attributes(attr)
     end
 
     # Create or update a mutant in the backend
@@ -64,10 +60,12 @@ module MutantSchoolAPIModel
     def save
       if persisted?
         response = HTTP.put("#{self.class.base_url}/#{id}", json: payload)
+        return false if response.code != 200
       else
         response = HTTP.post(self.class.base_url, json: payload)
+        return false if response.code != 201
       end
-      JSON.parse(response.to_s)
+      update_attributes JSON.parse(response.to_s)
     end
 
     # Delete a mutant from the backend
@@ -87,6 +85,14 @@ module MutantSchoolAPIModel
     end
 
     private
+
+    def update_attributes(attr = {})
+      attr.each do |name, value|
+        if self.class.attribute_names.include? name.to_sym
+          instance_variable_set("@#{name}", value)
+        end
+      end
+    end
 
     def payload
       permitted_attributes = to_h
