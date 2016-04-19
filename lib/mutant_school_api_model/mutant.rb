@@ -62,7 +62,11 @@ module MutantSchoolAPIModel
     # Create or update a mutant in the backend
     # mutant.save
     def save
-      response = HTTP.post(self.class.base_url, json: payload)
+      if persisted?
+        response = HTTP.put("#{self.class.base_url}/#{id}", json: payload)
+      else
+        response = HTTP.post(self.class.base_url, json: payload)
+      end
       JSON.parse(response.to_s)
     end
 
@@ -76,6 +80,10 @@ module MutantSchoolAPIModel
       self.class.attribute_names.each_with_object({}) do |name, attributes_hash|
         attributes_hash[name] = send(name)
       end
+    end
+
+    def persisted?
+      !!@id
     end
 
     private
