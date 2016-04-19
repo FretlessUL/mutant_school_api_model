@@ -5,3 +5,5 @@ Minitest::Reporters.use!
 require 'mutant_school_api_model'
 
 require 'minitest/autorun'
+
+include MutantSchoolAPIModel
