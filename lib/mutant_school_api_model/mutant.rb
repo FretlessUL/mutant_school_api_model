@@ -21,6 +21,16 @@ module MutantSchoolAPIModel
       ]
     end
 
+    def self.read_only_attribute_names
+      [
+        :id,
+        :url,
+        :created_at,
+        :updated_at,
+        :advisor
+      ]
+    end
+
     # Get all the mutants from the backend
     # mutant = Mutant.all
     def self.all
@@ -37,7 +47,8 @@ module MutantSchoolAPIModel
       Mutant.new(JSON.parse(response.to_s))
     end
 
-    attr_accessor *attribute_names
+    attr_accessor *(attribute_names - read_only_attribute_names)
+    attr_reader *read_only_attribute_names
 
     def initialize(attr = {})
       # Set instance variables from the items in the hash
